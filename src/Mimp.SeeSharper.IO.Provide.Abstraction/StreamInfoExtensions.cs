@@ -35,15 +35,15 @@ namespace Mimp.SeeSharper.IO.Provide.Abstraction
             };
         }
 
-        public static async IAwaitable<Stream> OpenReadAsync(this IStreamInfo streamInfo, CancellationToken cancellationToken)
+        public static IAwaitable<Stream> OpenReadAsync(this IStreamInfo streamInfo, CancellationToken cancellationToken)
         {
             if (streamInfo is null)
                 throw new ArgumentNullException(nameof(streamInfo));
 
             return streamInfo switch
             {
-                IAsyncReadStreamInfo read => await read.OpenReadAsync(cancellationToken),
-                IReadStreamInfo read => read.OpenRead(),
+                IAsyncReadStreamInfo read => read.OpenReadAsync(cancellationToken),
+                IReadStreamInfo read => Awaitables.Run(() => read.OpenRead(), cancellationToken),
                 _ => throw ProvideIOException.GetNoReadStreamException(streamInfo)
             };
         }
@@ -81,15 +81,15 @@ namespace Mimp.SeeSharper.IO.Provide.Abstraction
             };
         }
 
-        public static async IAwaitable<Stream> OpenWriteAsync(this IStreamInfo streamInfo, CancellationToken cancellationToken)
+        public static IAwaitable<Stream> OpenWriteAsync(this IStreamInfo streamInfo, CancellationToken cancellationToken)
         {
             if (streamInfo is null)
                 throw new ArgumentNullException(nameof(streamInfo));
 
             return streamInfo switch
             {
-                IAsyncWriteStreamInfo write => await write.OpenWriteAsync(cancellationToken),
-                IWriteStreamInfo write => write.OpenWrite(),
+                IAsyncWriteStreamInfo write => write.OpenWriteAsync(cancellationToken),
+                IWriteStreamInfo write => Awaitables.Run(() => write.OpenWrite(), cancellationToken),
                 _ => throw ProvideIOException.GetNoWriteStreamException(streamInfo)
             };
         }
@@ -126,15 +126,15 @@ namespace Mimp.SeeSharper.IO.Provide.Abstraction
             };
         }
 
-        public static async IAwaitable<bool> DeleteAsync(this IStreamInfo streamInfo, CancellationToken cancellationToken)
+        public static IAwaitable<bool> DeleteAsync(this IStreamInfo streamInfo, CancellationToken cancellationToken)
         {
             if (streamInfo is null)
                 throw new ArgumentNullException(nameof(streamInfo));
 
             return streamInfo switch
             {
-                IAsyncDeleteStreamInfo delete => await delete.DeleteAsync(cancellationToken),
-                IDeleteStreamInfo delete => delete.Delete(),
+                IAsyncDeleteStreamInfo delete => delete.DeleteAsync(cancellationToken),
+                IDeleteStreamInfo delete => Awaitables.Run(() => delete.Delete(), cancellationToken),
                 _ => throw ProvideIOException.GetNoDeleteStreamException(streamInfo)
             };
         }

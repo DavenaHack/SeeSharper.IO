@@ -69,6 +69,7 @@ namespace Mimp.SeeSharper.IO
                         Array.Copy(_buffer, _index + i, buffer, 0, _length);
                 }
                 _buffer = buffer;
+                _index = 0;
                 _capacity = value;
             }
         }

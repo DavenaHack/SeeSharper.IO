@@ -1,4 +1,5 @@
-﻿using Mimp.SeeSharper.Async.Abstraction;
+﻿using Mimp.SeeSharper.Async;
+using Mimp.SeeSharper.Async.Abstraction;
 using System;
 using System.Threading;
 
@@ -11,7 +12,7 @@ namespace Mimp.SeeSharper.IO.Provide.Abstraction
         #region ProvideStreamParent
 
 
-        public static async IAwaitable<IStreamParentInfo> ProvideStreamParentAsync(this IStreamParentProvider provider, Uri uri, CancellationToken cancellationToken)
+        public static IAwaitable<IStreamParentInfo> ProvideStreamParentAsync(this IStreamParentProvider provider, Uri uri, CancellationToken cancellationToken)
         {
             if (provider is null)
                 throw new ArgumentNullException(nameof(provider));
@@ -20,8 +21,8 @@ namespace Mimp.SeeSharper.IO.Provide.Abstraction
 
             return provider switch
             {
-                IAsyncStreamParentProvider async => await async.ProvideStreamParentAsync(uri, cancellationToken),
-                _ => provider.ProvideStreamParent(uri)
+                IAsyncStreamParentProvider async => async.ProvideStreamParentAsync(uri, cancellationToken),
+                _ => Awaitables.Run(() => provider.ProvideStreamParent(uri), cancellationToken)
             };
         }
 
@@ -36,17 +37,17 @@ namespace Mimp.SeeSharper.IO.Provide.Abstraction
             if (uri is null)
                 throw new ArgumentNullException(nameof(uri));
 
-            return provider.ProvideStreamParent(provider.ResolveUri(uri));
+            return provider.ProvideStreamParent(new Uri(uri, UriKind.RelativeOrAbsolute));
         }
 
-        public static async IAwaitable<IStreamParentInfo> ProvideStreamParentAsync(this IStreamParentProvider provider, string uri, CancellationToken cancellationToken)
+        public static IAwaitable<IStreamParentInfo> ProvideStreamParentAsync(this IStreamParentProvider provider, string uri, CancellationToken cancellationToken)
         {
             if (provider is null)
                 throw new ArgumentNullException(nameof(provider));
             if (uri is null)
                 throw new ArgumentNullException(nameof(uri));
 
-            return await provider.ProvideStreamParentAsync(await provider.ResolveUriAsync(uri, cancellationToken), cancellationToken);
+            return provider.ProvideStreamParentAsync(new Uri(uri, UriKind.RelativeOrAbsolute), cancellationToken);
         }
 
         public static IAwaitable<IStreamParentInfo> ProvideStreamParentAsync(this IStreamParentProvider provider, string uri) =>
@@ -60,17 +61,17 @@ namespace Mimp.SeeSharper.IO.Provide.Abstraction
         #region ResolveUri
 
 
-        public static Uri ResolveUri(this IStreamParentProvider provider, string uri)
+        public static Uri ResolveUri(this IStreamParentProvider provider, Uri uri)
         {
             if (provider is null)
                 throw new ArgumentNullException(nameof(provider));
             if (uri is null)
                 throw new ArgumentNullException(nameof(uri));
 
-            return provider.ResolveUri(uri, null);
+            return provider.Resolve(uri, null);
         }
 
-        public static async IAwaitable<Uri> ResolveUriAsync(this IStreamParentProvider provider, string uri, Uri? baseUri, CancellationToken cancellationToken)
+        public static IAwaitable<Uri> ResolveUriAsync(this IStreamParentProvider provider, Uri uri, Uri? baseUri, CancellationToken cancellationToken)
         {
             if (provider is null)
                 throw new ArgumentNullException(nameof(provider));
@@ -79,17 +80,33 @@ namespace Mimp.SeeSharper.IO.Provide.Abstraction
 
             return provider switch
             {
-                IAsyncStreamParentProvider async => await async.ResolveUriAsync(uri, baseUri, cancellationToken),
-                _ => provider.ResolveUri(uri, baseUri)
+                IAsyncStreamParentProvider async => async.ResolveUriAsync(uri, baseUri, cancellationToken),
+                _ => Awaitables.Run(() => provider.Resolve(uri, baseUri), cancellationToken)
             };
         }
 
-        public static IAwaitable<Uri> ResolveUriAsync(this IStreamParentProvider provider, string uri, Uri? baseUri) =>
+        public static IAwaitable<Uri> ResolveUriAsync(this IStreamParentProvider provider, Uri uri, Uri? baseUri) =>
             provider.ResolveUriAsync(uri, baseUri, CancellationToken.None);
 
+        public static IAwaitable<Uri> ResolveUriAsync(this IStreamParentProvider provider, Uri uri, CancellationToken cancellationToken) =>
+            provider.ResolveUriAsync(uri, null, cancellationToken);
+
+        public static IAwaitable<Uri> ResolveUriAsync(this IStreamParentProvider provider, Uri uri) =>
+            provider.ResolveUriAsync(uri, CancellationToken.None);
+
+
+        public static Uri ResolveUri(this IStreamParentProvider provider, string uri)
+        {
+            if (provider is null)
+                throw new ArgumentNullException(nameof(provider));
+            if (uri is null)
+                throw new ArgumentNullException(nameof(uri));
+
+            return provider.Resolve(new Uri(uri, UriKind.RelativeOrAbsolute), null);
+        }
 
         public static IAwaitable<Uri> ResolveUriAsync(this IStreamParentProvider provider, string uri, CancellationToken cancellationToken) =>
-            provider.ResolveUriAsync(uri, null, cancellationToken);
+            provider.ResolveUriAsync(new Uri(uri, UriKind.RelativeOrAbsolute), null, cancellationToken);
 
         public static IAwaitable<Uri> ResolveUriAsync(this IStreamParentProvider provider, string uri) =>
             provider.ResolveUriAsync(uri, CancellationToken.None);
@@ -132,21 +149,22 @@ namespace Mimp.SeeSharper.IO.Provide.Abstraction
             if (uri is null)
                 throw new ArgumentNullException(nameof(uri));
 
-            return provider.ProvideStreamParent(uri).Create();
+            return provider.CreateParent(new Uri(uri, UriKind.RelativeOrAbsolute));
         }
 
-        public static async IAwaitable<bool> CreateParentAsync(this IStreamParentProvider provider, string uri, CancellationToken cancellationToken)
+        public static IAwaitable<bool> CreateParentAsync(this IStreamParentProvider provider, string uri, CancellationToken cancellationToken)
         {
             if (provider is null)
                 throw new ArgumentNullException(nameof(provider));
             if (uri is null)
                 throw new ArgumentNullException(nameof(uri));
 
-            return await (await provider.ProvideStreamParentAsync(uri, cancellationToken)).CreateAsync(cancellationToken);
+            return provider.CreateParentAsync(new Uri(uri, UriKind.RelativeOrAbsolute), cancellationToken);
         }
 
         public static IAwaitable<bool> CreateParentAsync(this IStreamParentProvider provider, string uri) =>
             provider.CreateParentAsync(uri, CancellationToken.None);
+
 
 
         #endregion CreateParent
@@ -186,17 +204,17 @@ namespace Mimp.SeeSharper.IO.Provide.Abstraction
             if (uri is null)
                 throw new ArgumentNullException(nameof(uri));
 
-            return provider.ProvideStreamParent(uri).Delete();
+            return provider.DeleteParent(new Uri(uri, UriKind.RelativeOrAbsolute));
         }
 
-        public static async IAwaitable<bool> DeleteParentAsync(this IStreamParentProvider provider, string uri, CancellationToken cancellationToken)
+        public static IAwaitable<bool> DeleteParentAsync(this IStreamParentProvider provider, string uri, CancellationToken cancellationToken)
         {
             if (provider is null)
                 throw new ArgumentNullException(nameof(provider));
             if (uri is null)
                 throw new ArgumentNullException(nameof(uri));
 
-            return await (await provider.ProvideStreamParentAsync(uri, cancellationToken)).DeleteAsync(cancellationToken);
+            return provider.DeleteParentAsync(new Uri(uri, UriKind.RelativeOrAbsolute), cancellationToken);
         }
 
         public static IAwaitable<bool> DeleteParentAsync(this IStreamParentProvider provider, string uri) =>

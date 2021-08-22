@@ -6,18 +6,13 @@ using System.Linq;
 
 namespace Mimp.SeeSharper.IO.Provide
 {
-    public class PhysicalStreamParentInfo : IStreamParentInfo
+    public class PhysicalStreamParentInfo : IStreamParentInfo, ICreateStreamParentInfo, IDeleteStreamParentInfo
     {
 
 
         public Uri Uri { get; }
 
         public Uri? ParentUri { get; }
-
-
-        public IEnumerable<Uri> Streams { get; }
-
-        public IEnumerable<Uri> Children { get; }
 
 
         public string Path { get; }
@@ -44,9 +39,6 @@ namespace Mimp.SeeSharper.IO.Provide
 
             ParentUri = directoryInfo.Parent?.GetUri();
 
-            Streams = directoryInfo.GetFiles().Select(f => f.GetUri());
-            Children = directoryInfo.GetDirectories().Select(d => d.GetUri());
-
             Path = directoryInfo.FullName;
             Name = directoryInfo.Name;
             Exists = directoryInfo.Exists;
@@ -57,7 +49,7 @@ namespace Mimp.SeeSharper.IO.Provide
 
         public bool Create()
         {
-            ThrowIfNoFile();
+            ThrowIfNoDirectory();
             try
             {
                 if (Directory.Exists(Path))
@@ -73,9 +65,21 @@ namespace Mimp.SeeSharper.IO.Provide
         }
 
 
+        public IEnumerable<Uri> GetStreams()
+        {
+            ThrowIfNoDirectory();
+            return Directory.Exists(Path) ? Directory.GetFiles(Path).Select(f => new Uri($"file:///{f}")) : Array.Empty<Uri>();
+        }
+
+        public IEnumerable<Uri> GetChildren()
+        {
+            ThrowIfNoDirectory();
+            return Directory.Exists(Path) ? Directory.GetDirectories(Path).Select(f => new Uri($"file:///{f}")) : Array.Empty<Uri>();
+        }
+
         public bool Delete()
         {
-            ThrowIfNoFile();
+            ThrowIfNoDirectory();
             try
             {
                 if (!Directory.Exists(Path))
@@ -91,7 +95,7 @@ namespace Mimp.SeeSharper.IO.Provide
         }
 
 
-        protected void ThrowIfNoFile()
+        protected void ThrowIfNoDirectory()
         {
             if (File.Exists(Path))
                 throw ProvideIOException.GetIsNoLongerStreamParentException(this);

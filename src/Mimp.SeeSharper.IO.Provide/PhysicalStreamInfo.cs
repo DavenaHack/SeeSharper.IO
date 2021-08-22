@@ -89,7 +89,7 @@ namespace Mimp.SeeSharper.IO.Provide
             ThrowIfNoFile();
             try
             {
-                if (File.Exists(Path))
+                if (!File.Exists(Path))
                     return false;
 
                 File.Delete(Path);

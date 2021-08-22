@@ -34,15 +34,15 @@ namespace Mimp.SeeSharper.IO.Provide.Abstraction
             };
         }
 
-        public static async IAwaitable<bool> CreateAsync(this IStreamParentInfo parent, CancellationToken cancellationToken)
+        public static IAwaitable<bool> CreateAsync(this IStreamParentInfo parent, CancellationToken cancellationToken)
         {
             if (parent is null)
                 throw new ArgumentNullException(nameof(parent));
 
             return parent switch
             {
-                IAsyncCreateStreamParentInfo create => await create.CreateAsync(cancellationToken),
-                ICreateStreamParentInfo create => create.Create(),
+                IAsyncCreateStreamParentInfo create => create.CreateAsync(cancellationToken),
+                ICreateStreamParentInfo create => Awaitables.Run(() => create.Create(), cancellationToken),
                 _ => throw ProvideIOException.GetNoCreateStreamParentException(parent)
             };
         }
@@ -80,15 +80,15 @@ namespace Mimp.SeeSharper.IO.Provide.Abstraction
             };
         }
 
-        public static async IAwaitable<bool> DeleteAsync(this IStreamParentInfo parent, CancellationToken cancellationToken)
+        public static IAwaitable<bool> DeleteAsync(this IStreamParentInfo parent, CancellationToken cancellationToken)
         {
             if (parent is null)
                 throw new ArgumentNullException(nameof(parent));
 
             return parent switch
             {
-                IAsyncDeleteStreamParentInfo create => await create.DeleteAsync(cancellationToken),
-                IDeleteStreamParentInfo create => create.Delete(),
+                IAsyncDeleteStreamParentInfo create => create.DeleteAsync(cancellationToken),
+                IDeleteStreamParentInfo create => Awaitables.Run(() => create.Delete(), cancellationToken),
                 _ => throw ProvideIOException.GetNoDeleteStreamParentException(parent)
             };
         }

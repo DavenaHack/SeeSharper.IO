@@ -12,9 +12,9 @@ namespace Mimp.SeeSharper.IO.Provide.Abstraction
         public Uri? ParentUri { get; }
 
 
-        public IEnumerable<Uri> Streams { get; }
+        public IEnumerable<Uri> GetStreams();
 
-        public IEnumerable<Uri> Children { get; }
+        public IEnumerable<Uri> GetChildren();
 
 
     }

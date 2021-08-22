@@ -8,7 +8,7 @@ namespace Mimp.SeeSharper.IO.Provide.Abstraction
 
         public IStreamParentInfo ProvideStreamParent(Uri uri);
 
-        public Uri ResolveUri(string uri, Uri? baseUri);
+        public Uri Resolve(Uri uri, Uri? baseUri);
 
 
     }

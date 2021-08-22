@@ -11,7 +11,7 @@ namespace Mimp.SeeSharper.IO.Provide.Abstraction
 
         public IAwaitable<IStreamParentInfo> ProvideStreamParentAsync(Uri uri, CancellationToken cancellationToken);
 
-        public IAwaitable<Uri> ResolveUriAsync(string uri, Uri? baseUri, CancellationToken cancellationToken);
+        public IAwaitable<Uri> ResolveUriAsync(Uri uri, Uri? baseUri, CancellationToken cancellationToken);
 
 
     }

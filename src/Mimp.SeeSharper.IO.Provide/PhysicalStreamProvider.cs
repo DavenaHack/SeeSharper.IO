@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Mimp.SeeSharper.IO.Provide
 {
-    public class PhysicalStreamProvider : IStreamSystemProvider
+    public class PhysicalStreamProvider : IStreamProvider, IStreamParentProvider
     {
 
 
@@ -13,21 +13,22 @@ namespace Mimp.SeeSharper.IO.Provide
 
         public PhysicalStreamProvider(Uri baseUri)
         {
-            BaseUri = baseUri ?? throw new ArgumentNullException(nameof(baseUri));
-            if (baseUri.Scheme != "file")
+            if (baseUri is null)
+                throw new ArgumentNullException(nameof(baseUri));
+            if (baseUri.IsAbsoluteUri && baseUri.Scheme != "file")
                 throw ProvideIOException.GetInvalidSchemeException(baseUri);
+            else
+                baseUri = new Uri($"file:///{Path.GetFullPath(baseUri.OriginalString)}");
+            BaseUri = baseUri;
         }
 
         public PhysicalStreamProvider(string directory)
-            : this(new Uri("file://" + Path.GetFullPath(directory))) { }
+            : this(new Uri(directory, UriKind.RelativeOrAbsolute)) { }
 
 
         public IStreamInfo ProvideStream(Uri uri)
         {
-            if (uri is null)
-                throw new ArgumentNullException(nameof(uri));
-            if (uri.Scheme != "file")
-                throw ProvideIOException.GetInvalidSchemeException(uri);
+            uri = Resolve(uri, null);
 
             try
             {
@@ -42,10 +43,7 @@ namespace Mimp.SeeSharper.IO.Provide
 
         public IStreamParentInfo ProvideStreamParent(Uri uri)
         {
-            if (uri is null)
-                throw new ArgumentNullException(nameof(uri));
-            if (uri.Scheme != "file")
-                throw ProvideIOException.GetInvalidSchemeException(uri);
+            uri = Resolve(uri, null);
 
             try
             {
@@ -58,22 +56,25 @@ namespace Mimp.SeeSharper.IO.Provide
         }
 
 
-        public Uri ResolveUri(string uri, Uri? parentUri)
+        public Uri Resolve(Uri uri, Uri? parentUri)
         {
             if (uri is null)
                 throw new ArgumentNullException(nameof(uri));
+            if (uri.IsAbsoluteUri && uri.Scheme != "file")
+                throw ProvideIOException.GetInvalidSchemeException(uri);
             if (parentUri is not null && parentUri.Scheme != "file")
                 throw ProvideIOException.GetInvalidSchemeException(parentUri);
 
-            uri = uri.Trim();
-            if (uri.ToLower().StartsWith("file://"))
-                uri = uri.Substring("file://".Length);
+            if (uri.IsAbsoluteUri)
+                return uri;
 
-            if (Path.IsPathRooted(uri))
-                return new Uri($"file://{uri}");
+            var path = uri.OriginalString;
+            if (Path.IsPathRooted(path))
+                return new Uri($"file:///{Path.GetFullPath(path)}");
 
-            return new Uri(Path.Combine((parentUri ?? BaseUri).LocalPath, uri));
+            return new Uri($"file:///{Path.GetFullPath(Path.Combine((parentUri ?? BaseUri).LocalPath, path))}");
         }
+
 
     }
 }
