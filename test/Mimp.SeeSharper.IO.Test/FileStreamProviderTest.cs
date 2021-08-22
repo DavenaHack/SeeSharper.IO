@@ -10,12 +10,18 @@ namespace Mimp.SeeSharper.IO.Test
     public class FileStreamProviderTest
     {
 
+        private static readonly string _root = "path";
+        private static readonly string _path = Path.Combine(_root, "to");
+        private static readonly string _dir = Path.Combine(_path, "directory");
+        private static readonly string _temp = Path.Combine(_path, "file.tmp");
+        private static readonly string _unixTemp = "path/to/file.tmp";
+        private static readonly string _windowsTemp = @"path\to\file.tmp";
 
         [TestCleanup]
         public void Clean()
         {
-            if (Directory.Exists("path"))
-                Directory.Delete("path", true);
+            if (Directory.Exists(_root))
+                Directory.Delete(_root, true);
         }
 
 
@@ -26,7 +32,7 @@ namespace Mimp.SeeSharper.IO.Test
             var provider = new FileStreamProvider(dir);
             Assert.ThrowsException<ProvideIOException>(() => provider.ProvideStream(""));
 
-            Assert.AreEqual(Path.GetFullPath(Path.Combine(dir, "path/to/file.tmp")), ((FileStreamInfo)provider.ProvideStream("path/to/file.tmp")).Path);
+            Assert.AreEqual(Path.GetFullPath(Path.Combine(dir, _temp)), ((FileStreamInfo)provider.ProvideStream(_temp)).Path);
         }
 
 
@@ -35,18 +41,18 @@ namespace Mimp.SeeSharper.IO.Test
         {
             var provider = new CurrentFileStreamProvider();
 
-            using (var stream = provider.OpenWrite("path/to/file.tmp"))
+            using (var stream = provider.OpenWrite(_unixTemp))
                 stream.Write("temp");
 
-            Assert.AreEqual("temp", File.ReadAllText("path/to/file.tmp"));
+            Assert.AreEqual("temp", File.ReadAllText(_temp));
 
-            using (var stream = provider.OpenWrite(@"path\to\file.tmp"))
+            using (var stream = provider.OpenWrite(_windowsTemp))
             {
                 stream.SeekEnd();
                 stream.Write("temp");
             }
 
-            Assert.AreEqual("temptemp", File.ReadAllText(@"path\to\file.tmp"));
+            Assert.AreEqual("temptemp", File.ReadAllText(_temp));
         }
 
 
@@ -55,15 +61,15 @@ namespace Mimp.SeeSharper.IO.Test
         {
             var provider = new CurrentFileStreamProvider();
 
-            using (var stream = provider.OpenRead("path/to/file.tmp"))
+            using (var stream = provider.OpenRead(_temp))
                 Assert.AreEqual(0, stream.Length);
 
-            Directory.CreateDirectory("path/to");
-            File.WriteAllText("path/to/file.tmp", "temp");
-            using (var stream = provider.OpenRead("path/to/file.tmp"))
+            Directory.CreateDirectory(_path);
+            File.WriteAllText(_temp, "temp");
+            using (var stream = provider.OpenRead(_unixTemp))
                 Assert.AreEqual("temp", stream.ReadString());
 
-            using (var stream = provider.OpenRead(@"path\to\file.tmp"))
+            using (var stream = provider.OpenRead(_windowsTemp))
                 Assert.AreEqual("temp", stream.ReadString());
         }
 
@@ -73,12 +79,12 @@ namespace Mimp.SeeSharper.IO.Test
         {
             var provider = new CurrentFileStreamProvider();
 
-            Assert.IsFalse(provider.Delete("path/to/file.tmp"));
+            Assert.IsFalse(provider.Delete(_temp));
 
-            Directory.CreateDirectory("path/to");
-            File.Create("path/to/file.tmp").Dispose();
-            Assert.IsTrue(provider.Delete("path/to/file.tmp"));
-            Assert.IsFalse(File.Exists("path/to/file.tmp"));
+            Directory.CreateDirectory(_path);
+            File.Create(_temp).Dispose();
+            Assert.IsTrue(provider.Delete(_temp));
+            Assert.IsFalse(File.Exists(_temp));
         }
 
 
@@ -87,9 +93,9 @@ namespace Mimp.SeeSharper.IO.Test
         {
             var provider = new CurrentFileStreamProvider();
 
-            Assert.IsTrue(provider.CreateParent("path/to/directory"));
-            Assert.IsTrue(Directory.Exists("path/to/directory"));
-            Assert.IsFalse(provider.CreateParent("path/to/directory"));
+            Assert.IsTrue(provider.CreateParent(_dir));
+            Assert.IsTrue(Directory.Exists(_dir));
+            Assert.IsFalse(provider.CreateParent(_dir));
         }
 
 
@@ -98,11 +104,11 @@ namespace Mimp.SeeSharper.IO.Test
         {
             var provider = new CurrentFileStreamProvider();
 
-            Assert.IsFalse(provider.DeleteParent("path/to/directory"));
+            Assert.IsFalse(provider.DeleteParent(_dir));
 
-            Directory.CreateDirectory("path/to/directory");
-            Assert.IsTrue(provider.DeleteParent("path/to/directory"));
-            Assert.IsFalse(Directory.Exists("path/to/directory"));
+            Directory.CreateDirectory(_dir);
+            Assert.IsTrue(provider.DeleteParent(_dir));
+            Assert.IsFalse(Directory.Exists(_dir));
         }
 
 
