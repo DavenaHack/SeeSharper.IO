@@ -1,0 +1,7 @@
+# SeeShraper IO [![build and test](https://img.shields.io/github/workflow/status/DavenaHack/SeeSharper.IO/build%20and%20test?label=build%20and%20test&logo=github)](https://github.com/DavenaHack/SeeSharper.IO/actions/workflows/BuildAndTest.yml) [![NuGet Mimp.SeeSharper.IO](https://img.shields.io/nuget/v/Mimp.SeeSharper.IO?label=Mimp.SeeSharper.IO&logo=nuget)](https://www.nuget.org/packages/Mimp.SeeSharper.IO/) [![NuGet Mimp.SeeSharper.IO.Provide.Abstraction](https://img.shields.io/nuget/v/Mimp.SeeSharper.IO.Provide.Abstraction?label=Mimp.SeeSharper.IO.Provide.Abstraction&logo=nuget)](https://www.nuget.org/packages/Mimp.SeeSharper.IO.Provide.Abstraction/) [![NuGet Mimp.SeeSharper.IO.Provide.Data](https://img.shields.io/nuget/v/Mimp.SeeSharper.IO.Provide.Data?label=Mimp.SeeSharper.IO.Provide.Data&logo=nuget)](https://www.nuget.org/packages/Mimp.SeeSharper.IO.Provide.Data/) [![NuGet Mimp.SeeSharper.IO.Provide.File](https://img.shields.io/nuget/v/Mimp.SeeSharper.IO.Provide.File?label=Mimp.SeeSharper.IO.Provide.File&logo=nuget)](https://www.nuget.org/packages/Mimp.SeeSharper.IO.Provide.File/)
+
+*SeeSharper.IO* is a component from the framework *[SeeSharper](https://github.com/DavenaHack/SeeSharper)*. *SeeSharper.IO*  help you to handle IO easily.
+
+
+## License
+Like *SeeSharper*, *SeeSharper.IO* is under the [MIT license](https://github.com/DavenaHack/SeeSharper.IO/blob/master/LICENSE), too.
