@@ -15,10 +15,12 @@ namespace Mimp.SeeSharper.IO.Provide.File
         {
             if (baseUri is null)
                 throw new ArgumentNullException(nameof(baseUri));
+
             if (baseUri.IsAbsoluteUri && baseUri.Scheme != "file")
                 throw ProvideIOException.GetInvalidSchemeException(baseUri);
             else
-                baseUri = new Uri($"file:///{Path.GetFullPath(baseUri.OriginalString)}");
+                baseUri = new Uri($"file:///{Path.GetFullPath(baseUri.GetFilePath())}");
+            
             BaseUri = baseUri;
         }
 
@@ -32,7 +34,7 @@ namespace Mimp.SeeSharper.IO.Provide.File
 
             try
             {
-                return new FileStreamInfo(uri, new FileInfo(uri.LocalPath));
+                return new FileStreamInfo(uri, new FileInfo(uri.GetFilePath()));
             }
             catch (Exception ex)
             {
@@ -47,7 +49,7 @@ namespace Mimp.SeeSharper.IO.Provide.File
 
             try
             {
-                return new FileStreamParentInfo(uri, new DirectoryInfo(uri.LocalPath));
+                return new FileStreamParentInfo(uri, new DirectoryInfo(uri.GetFilePath()));
             }
             catch (Exception ex)
             {
@@ -68,11 +70,14 @@ namespace Mimp.SeeSharper.IO.Provide.File
             if (uri.IsAbsoluteUri)
                 return uri;
 
-            var path = uri.OriginalString;
+            var path = uri.OriginalString.Trim();
             if (Path.IsPathRooted(path))
                 return new Uri($"file:///{Path.GetFullPath(path)}");
 
-            return new Uri($"file:///{Path.GetFullPath(Path.Combine((parentUri ?? BaseUri).LocalPath, path))}");
+            var basePath = (parentUri ?? BaseUri).GetFilePath();
+            if (basePath.StartsWith("/"))
+                basePath = basePath.Substring(1);
+            return new Uri($"file:///{Path.GetFullPath(Path.Combine(basePath, path))}");
         }
 
 

@@ -10,7 +10,7 @@ namespace Mimp.SeeSharper.IO.Test
     public class FileStreamProviderTest
     {
 
-        private static readonly string _root = "path";
+        private static readonly string _root = Path.GetFullPath("path");
         private static readonly string _path = Path.Combine(_root, "to");
         private static readonly string _dir = Path.Combine(_path, "directory");
         private static readonly string _temp = Path.Combine(_path, "file.tmp");

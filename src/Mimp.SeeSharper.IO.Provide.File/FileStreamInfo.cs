@@ -29,6 +29,7 @@ namespace Mimp.SeeSharper.IO.Provide.File
         {
             if (fileInfo is null)
                 throw new ArgumentNullException(nameof(fileInfo));
+            Console.WriteLine($"-{fileInfo.FullName}-");
             if (Directory.Exists(fileInfo.FullName))
                 throw new ArgumentException($"{fileInfo.FullName} isn't a file.", nameof(fileInfo));
 

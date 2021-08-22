@@ -12,7 +12,7 @@ namespace Mimp.SeeSharper.IO
             if (file is null)
                 throw new ArgumentNullException(nameof(file));
 
-            return new Uri($"file://{file.FullName}");
+            return new Uri($"file:///{file.FullName}");
         }
 
 
