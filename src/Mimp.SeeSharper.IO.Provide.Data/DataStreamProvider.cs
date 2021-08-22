@@ -1,7 +1,7 @@
 ﻿using Mimp.SeeSharper.IO.Provide.Abstraction;
 using System;
 
-namespace Mimp.SeeSharper.IO.Provide
+namespace Mimp.SeeSharper.IO.Provide.Data
 {
     public class DataStreamProvider : IStreamProvider
     {

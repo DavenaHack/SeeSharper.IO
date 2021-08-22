@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Mimp.SeeSharper.IO.Provide.Abstraction\Mimp.SeeSharper.IO.Provide.Abstraction.csproj" />
+    <ProjectReference Include="..\..\src\Mimp.SeeSharper.IO.Provide.File\Mimp.SeeSharper.IO.Provide.File.csproj" />
     <ProjectReference Include="..\..\src\Mimp.SeeSharper.IO.Provide\Mimp.SeeSharper.IO.Provide.csproj" />
     <ProjectReference Include="..\..\src\Mimp.SeeSharper.IO\Mimp.SeeSharper.IO.csproj" />
   </ItemGroup>

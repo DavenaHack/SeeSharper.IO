@@ -2,16 +2,16 @@
 using System;
 using System.IO;
 
-namespace Mimp.SeeSharper.IO.Provide
+namespace Mimp.SeeSharper.IO.Provide.File
 {
-    public class PhysicalStreamProvider : IStreamProvider, IStreamParentProvider
+    public class FileStreamProvider : IStreamProvider, IStreamParentProvider
     {
 
 
         public Uri BaseUri { get; }
 
 
-        public PhysicalStreamProvider(Uri baseUri)
+        public FileStreamProvider(Uri baseUri)
         {
             if (baseUri is null)
                 throw new ArgumentNullException(nameof(baseUri));
@@ -22,7 +22,7 @@ namespace Mimp.SeeSharper.IO.Provide
             BaseUri = baseUri;
         }
 
-        public PhysicalStreamProvider(string directory)
+        public FileStreamProvider(string directory)
             : this(new Uri(directory, UriKind.RelativeOrAbsolute)) { }
 
 
@@ -32,7 +32,7 @@ namespace Mimp.SeeSharper.IO.Provide
 
             try
             {
-                return new PhysicalStreamInfo(uri, new FileInfo(uri.LocalPath));
+                return new FileStreamInfo(uri, new FileInfo(uri.LocalPath));
             }
             catch (Exception ex)
             {
@@ -47,7 +47,7 @@ namespace Mimp.SeeSharper.IO.Provide
 
             try
             {
-                return new PhysicalStreamParentInfo(uri, new DirectoryInfo(uri.LocalPath));
+                return new FileStreamParentInfo(uri, new DirectoryInfo(uri.LocalPath));
             }
             catch (Exception ex)
             {

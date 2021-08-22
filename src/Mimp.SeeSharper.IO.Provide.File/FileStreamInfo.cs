@@ -2,9 +2,9 @@
 using System;
 using System.IO;
 
-namespace Mimp.SeeSharper.IO.Provide
+namespace Mimp.SeeSharper.IO.Provide.File
 {
-    public class PhysicalStreamInfo
+    public class FileStreamInfo
         : IStreamInfo, IChildStreamInfo, IReadStreamInfo, IWriteStreamInfo, IDeleteStreamInfo
     {
 
@@ -25,7 +25,7 @@ namespace Mimp.SeeSharper.IO.Provide
         public DateTime LastWriteTime { get; }
 
 
-        public PhysicalStreamInfo(Uri uri, FileInfo fileInfo)
+        public FileStreamInfo(Uri uri, FileInfo fileInfo)
         {
             if (fileInfo is null)
                 throw new ArgumentNullException(nameof(fileInfo));
@@ -51,10 +51,10 @@ namespace Mimp.SeeSharper.IO.Provide
             ThrowIfNoFile();
             try
             {
-                if (!File.Exists(Path))
+                if (!System.IO.File.Exists(Path))
                     return StreamExtensions.EmptyRead;
 
-                return File.OpenRead(Path);
+                return System.IO.File.OpenRead(Path);
             }
             catch (Exception ex)
             {
@@ -68,14 +68,14 @@ namespace Mimp.SeeSharper.IO.Provide
             ThrowIfNoFile();
             try
             {
-                if (!File.Exists(Path))
+                if (!System.IO.File.Exists(Path))
                 {
                     var directory = System.IO.Path.GetDirectoryName(Path)!;
                     if (!Directory.Exists(directory))
                         Directory.CreateDirectory(directory);
                 }
 
-                return File.OpenWrite(Path);
+                return System.IO.File.OpenWrite(Path);
             }
             catch (Exception ex)
             {
@@ -89,10 +89,10 @@ namespace Mimp.SeeSharper.IO.Provide
             ThrowIfNoFile();
             try
             {
-                if (!File.Exists(Path))
+                if (!System.IO.File.Exists(Path))
                     return false;
 
-                File.Delete(Path);
+                System.IO.File.Delete(Path);
                 return true;
 
             }

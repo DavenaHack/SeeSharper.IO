@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Mimp.SeeSharper.IO.Provide
+namespace Mimp.SeeSharper.IO.Provide.Data
 {
     public class DataStreamInfo : IReadStreamInfo
     {

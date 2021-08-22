@@ -1,12 +1,13 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Mimp.SeeSharper.IO.Provide;
 using Mimp.SeeSharper.IO.Provide.Abstraction;
+using Mimp.SeeSharper.IO.Provide.File;
 using System.IO;
 
 namespace Mimp.SeeSharper.IO.Test
 {
     [TestClass]
-    public class PhysicalStreamTest
+    public class FileStreamProviderTest
     {
 
 
@@ -22,17 +23,17 @@ namespace Mimp.SeeSharper.IO.Test
         public void TestProvide()
         {
             var dir = Directory.GetCurrentDirectory();
-            var provider = new PhysicalStreamProvider(dir);
+            var provider = new FileStreamProvider(dir);
             Assert.ThrowsException<ProvideIOException>(() => provider.ProvideStream(""));
 
-            Assert.AreEqual(Path.GetFullPath(Path.Combine(dir, "path/to/file.tmp")), ((PhysicalStreamInfo)provider.ProvideStream("path/to/file.tmp")).Path);
+            Assert.AreEqual(Path.GetFullPath(Path.Combine(dir, "path/to/file.tmp")), ((FileStreamInfo)provider.ProvideStream("path/to/file.tmp")).Path);
         }
 
 
         [TestMethod]
         public void TestWrite()
         {
-            var provider = new CurrentPhysicalStreamProvider();
+            var provider = new CurrentFileStreamProvider();
 
             using (var stream = provider.OpenWrite("path/to/file.tmp"))
                 stream.Write("temp");
@@ -52,7 +53,7 @@ namespace Mimp.SeeSharper.IO.Test
         [TestMethod]
         public void TestRead()
         {
-            var provider = new CurrentPhysicalStreamProvider();
+            var provider = new CurrentFileStreamProvider();
 
             using (var stream = provider.OpenRead("path/to/file.tmp"))
                 Assert.AreEqual(0, stream.Length);
@@ -70,7 +71,7 @@ namespace Mimp.SeeSharper.IO.Test
         [TestMethod]
         public void TestDelete()
         {
-            var provider = new CurrentPhysicalStreamProvider();
+            var provider = new CurrentFileStreamProvider();
 
             Assert.IsFalse(provider.Delete("path/to/file.tmp"));
 
@@ -84,7 +85,7 @@ namespace Mimp.SeeSharper.IO.Test
         [TestMethod]
         public void TestCreateParent()
         {
-            var provider = new CurrentPhysicalStreamProvider();
+            var provider = new CurrentFileStreamProvider();
 
             Assert.IsTrue(provider.CreateParent("path/to/directory"));
             Assert.IsTrue(Directory.Exists("path/to/directory"));
@@ -95,7 +96,7 @@ namespace Mimp.SeeSharper.IO.Test
         [TestMethod]
         public void TestDeleteParent()
         {
-            var provider = new CurrentPhysicalStreamProvider();
+            var provider = new CurrentFileStreamProvider();
 
             Assert.IsFalse(provider.DeleteParent("path/to/directory"));
 

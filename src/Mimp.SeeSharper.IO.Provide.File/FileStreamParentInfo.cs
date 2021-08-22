@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Mimp.SeeSharper.IO.Provide
+namespace Mimp.SeeSharper.IO.Provide.File
 {
-    public class PhysicalStreamParentInfo : IStreamParentInfo, ICreateStreamParentInfo, IDeleteStreamParentInfo
+    public class FileStreamParentInfo : IStreamParentInfo, ICreateStreamParentInfo, IDeleteStreamParentInfo
     {
 
 
@@ -26,11 +26,11 @@ namespace Mimp.SeeSharper.IO.Provide
         public DateTime LastWriteTime { get; }
 
 
-        public PhysicalStreamParentInfo(Uri uri, DirectoryInfo directoryInfo)
+        public FileStreamParentInfo(Uri uri, DirectoryInfo directoryInfo)
         {
             if (directoryInfo is null)
                 throw new ArgumentNullException(nameof(directoryInfo));
-            if (File.Exists(directoryInfo.FullName))
+            if (System.IO.File.Exists(directoryInfo.FullName))
                 throw new ArgumentException($"{directoryInfo.FullName} isn't a directory.", nameof(directoryInfo));
 
             Uri = uri ?? throw new ArgumentNullException(nameof(uri));
@@ -97,7 +97,7 @@ namespace Mimp.SeeSharper.IO.Provide
 
         protected void ThrowIfNoDirectory()
         {
-            if (File.Exists(Path))
+            if (System.IO.File.Exists(Path))
                 throw ProvideIOException.GetIsNoLongerStreamParentException(this);
         }
 

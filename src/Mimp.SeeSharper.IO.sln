@@ -7,11 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mimp.SeeSharper.IO", "Mimp.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mimp.SeeSharper.IO.Provide.Abstraction", "Mimp.SeeSharper.IO.Provide.Abstraction\Mimp.SeeSharper.IO.Provide.Abstraction.csproj", "{8C8DC1FC-A98C-402B-ADA2-2CC0C81747DE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mimp.SeeSharper.IO.Provide", "Mimp.SeeSharper.IO.Provide\Mimp.SeeSharper.IO.Provide.csproj", "{F843EBAF-C17B-4558-B1DE-6878EBA0734D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mimp.SeeSharper.IO.Provide.File", "Mimp.SeeSharper.IO.Provide.File\Mimp.SeeSharper.IO.Provide.File.csproj", "{F843EBAF-C17B-4558-B1DE-6878EBA0734D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libs", "libs", "{7C044347-1CB2-4BE3-9D5C-2B7BF7AFE3C0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mimp.SeeSharper.Async", "..\libs\Async\src\Mimp.SeeSharper.Async\Mimp.SeeSharper.Async.csproj", "{BA1095E3-1CFB-459B-ABBB-BF2713F8BEEF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mimp.SeeSharper.IO.Provide.Data", "Mimp.SeeSharper.IO.Provide.Data\Mimp.SeeSharper.IO.Provide.Data.csproj", "{2C94D4D5-CDC8-454B-9394-370D9A945849}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +37,10 @@ Global
 		{BA1095E3-1CFB-459B-ABBB-BF2713F8BEEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA1095E3-1CFB-459B-ABBB-BF2713F8BEEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA1095E3-1CFB-459B-ABBB-BF2713F8BEEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C94D4D5-CDC8-454B-9394-370D9A945849}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C94D4D5-CDC8-454B-9394-370D9A945849}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C94D4D5-CDC8-454B-9394-370D9A945849}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C94D4D5-CDC8-454B-9394-370D9A945849}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
