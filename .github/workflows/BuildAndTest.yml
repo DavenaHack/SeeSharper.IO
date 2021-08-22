@@ -43,4 +43,4 @@ jobs:
       
     - name: Test
       working-directory: ./test
-      run: dotnet test --verbosity normal
+      run: sudo dotnet test --verbosity normal
