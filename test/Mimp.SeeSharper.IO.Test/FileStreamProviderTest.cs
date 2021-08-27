@@ -2,7 +2,9 @@
 using Mimp.SeeSharper.IO.Provide;
 using Mimp.SeeSharper.IO.Provide.Abstraction;
 using Mimp.SeeSharper.IO.Provide.File;
+using System;
 using System.IO;
+using System.Linq;
 
 namespace Mimp.SeeSharper.IO.Test
 {
@@ -109,6 +111,56 @@ namespace Mimp.SeeSharper.IO.Test
             Directory.CreateDirectory(_dir);
             Assert.IsTrue(provider.DeleteParent(_dir));
             Assert.IsFalse(Directory.Exists(_dir));
+        }
+
+
+        [TestMethod]
+        public void TestProvideChildrenRecursive()
+        {
+            var provider = new CurrentFileStreamProvider();
+
+            var other0 = Path.Combine(_dir, "other0");
+            var other1 = Path.Combine(_dir, "other1");
+
+            Directory.CreateDirectory(other0);
+            Directory.CreateDirectory(other1);
+
+            Assert.IsTrue(new[] {
+                _path,
+                _dir,
+                other0,
+                other1
+            }.SequenceEqual(provider.ProvideChildrenRecursive(_path)
+                .Select(p => ((FileStreamParentInfo)p).Path)));
+        }
+
+
+        [TestMethod]
+        public void TestGetStreamsRecursive()
+        {
+            var provider = new CurrentFileStreamProvider();
+
+            var other0 = Path.Combine(_dir, "other0");
+            var other1 = Path.Combine(_dir, "other1");
+
+            var file0 = Path.Combine(other0, "temp.tmp");
+            var file1 = Path.Combine(other1, "temp.tmp");
+
+            Directory.CreateDirectory(other0);
+            Directory.CreateDirectory(other1);
+            File.Create(_temp).Dispose();
+            File.Create(file0).Dispose();
+            File.Create(file1).Dispose();
+
+            System.Console.WriteLine(string.Join(", ", provider.GetStreamsRecursive(_path)
+                .Select(u => Path.GetFullPath(u.LocalPath)).ToArray()));
+
+            Assert.IsTrue(new[] {
+                _temp,
+                file0,
+                file1
+            }.SequenceEqual(provider.GetStreamsRecursive(_path)
+                .Select(u => Path.GetFullPath(u.LocalPath))));
         }
 
 

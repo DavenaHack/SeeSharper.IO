@@ -68,13 +68,13 @@ namespace Mimp.SeeSharper.IO.Provide.File
         public IEnumerable<Uri> GetStreams()
         {
             ThrowIfNoDirectory();
-            return Directory.Exists(Path) ? Directory.GetFiles(Path).Select(f => new Uri($"file:///{f}")) : Array.Empty<Uri>();
+            return Directory.Exists(Path) ? Directory.GetFiles(Path).Select(StringExtensions.FilePath2AbsoluteUri) : Array.Empty<Uri>();
         }
 
         public IEnumerable<Uri> GetChildren()
         {
             ThrowIfNoDirectory();
-            return Directory.Exists(Path) ? Directory.GetDirectories(Path).Select(f => new Uri($"file:///{f}")) : Array.Empty<Uri>();
+            return Directory.Exists(Path) ? Directory.GetDirectories(Path).Select(StringExtensions.FilePath2AbsoluteUri) : Array.Empty<Uri>();
         }
 
         public bool Delete()
